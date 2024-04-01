@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="225dp"
+        android:text="@string/bejelentkezesHeader"
+        android:textSize="50sp" />
+
+    <EditText
+        android:id="@+id/usernameInput"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="@string/n_v"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="@string/jelsz"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="290dp"
+        android:layout_marginTop="30dp"
+        android:onClick="login"
+        android:text="@string/bejelentkez_s" />
+</LinearLayout>

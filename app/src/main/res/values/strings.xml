@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GazoraJelento</string>
+    <string name="bejelentkez_s">Bejelentkezés</string>
+    <string name="n_v">Név</string>
+    <string name="jelsz">Jelszó</string>
+    <string name="bejelentkezesHeader">KI VAGY TE?</string>
+</resources>
