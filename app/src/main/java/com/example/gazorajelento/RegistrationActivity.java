@@ -1,5 +1,6 @@
 package com.example.gazorajelento;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,16 +11,25 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class RegistrationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String LOG_TAG = RegistrationActivity.class.getName();
     private static final String PREF_KEY = RegistrationActivity.class.getPackage().toString();
+    private static final int SECRET_KEY = 99;
 
     private SharedPreferences sharedPreferences;
+
+    private FirebaseAuth firebaseAuth;
 
     EditText username;
     EditText password;
@@ -65,6 +75,8 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mobileSpinner.setAdapter(adapter);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -83,11 +95,30 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         String mobileType = mobileSpinner.getSelectedItem().toString();
         String addressText = address.getText().toString();
 
+        firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d(LOG_TAG, "Sikerült egy új felhasználót létrehozni");
+
+                }
+            }
+        });
+
         if (passwordText.equals(passwordConfirmText)) {
             Log.i(LOG_TAG, "Regisztrált: " + usernameText + ", jelszó: " + passwordText + ", email: " + emailText + ", telefonszám: " + mobileText + ", telefontípus: " + mobileType + ", cím: " + addressText);
         } else {
             Log.e(LOG_TAG, "Nem egyenlő a jelszó és a jelszó megerősítése!");
+            return;
         }
+
+        setIntentToIndexPage();
+    }
+
+    private void setIntentToIndexPage () {
+        Intent intent = new Intent(this, IndexPageActivity.class);
+        intent.putExtra("SECRET_KEY", SECRET_KEY);
+        startActivity(intent);
     }
 
     public void cancelOut(View view) {

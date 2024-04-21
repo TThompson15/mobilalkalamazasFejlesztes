@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "669088006511",
+    "project_id": "androidgazorajelento",
+    "storage_bucket": "androidgazorajelento.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669088006511:android:cf0dfb15ffd205cc8b289a",
+        "android_client_info": {
+          "package_name": "com.example.gazorajelento"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "669088006511-mb9vup5l8l98ggs7jgu557fb7f4s2113.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gazorajelento",
+            "certificate_hash": "7819982bc472833989c1f245c8cdc7b24b6f29d6"
+          }
+        },
+        {
+          "client_id": "669088006511-qa1e3tpg9qvkah5pv3i1u20u31eggd3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa2m7KAb5XAT3ZoCJLMrZrUN0SBYnOO6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "669088006511-qa1e3tpg9qvkah5pv3i1u20u31eggd3k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
