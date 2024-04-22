@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-
+    implementation("com.google.firebase:firebase-auth:XX.X.X")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -40,5 +40,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation("com.google.firebase:firebase-auth")
+
     implementation("com.google.android.gms:play-services-auth:19.0.0")
 }

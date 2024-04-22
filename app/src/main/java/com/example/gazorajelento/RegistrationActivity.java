@@ -95,16 +95,6 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         String mobileType = mobileSpinner.getSelectedItem().toString();
         String addressText = address.getText().toString();
 
-        firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d(LOG_TAG, "Sikerült egy új felhasználót létrehozni");
-
-                }
-            }
-        });
-
         if (passwordText.equals(passwordConfirmText)) {
             Log.i(LOG_TAG, "Regisztrált: " + usernameText + ", jelszó: " + passwordText + ", email: " + emailText + ", telefonszám: " + mobileText + ", telefontípus: " + mobileType + ", cím: " + addressText);
         } else {
@@ -112,12 +102,24 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
             return;
         }
 
-        setIntentToIndexPage();
+        firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d(LOG_TAG, "Sikerült egy új felhasználót létrehozni");
+                    setIntentToIndexPage();
+                } else {
+                    Log.d(LOG_TAG, "Sajnos nem jött létre új felhasználó");
+                }
+            }
+        });
+
+
     }
 
     private void setIntentToIndexPage () {
         Intent intent = new Intent(this, IndexPageActivity.class);
-        intent.putExtra("SECRET_KEY", SECRET_KEY);
+        //intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
     }
 

@@ -10,6 +10,7 @@
     <string name="jelsz_meger_s_t_se">Jelszó megerősítése</string>
     <string name="cancel">Mégse</string>
     <string name="c_m">Cím</string>
+    <string name="default_web_client_id">1900085</string>
 
     <string-array name="mobileOptions">
         <item>Otthoni</item>
