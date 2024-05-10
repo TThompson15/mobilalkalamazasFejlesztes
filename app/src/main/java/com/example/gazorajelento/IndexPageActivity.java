@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class IndexPageActivity extends AppCompatActivity {
 
@@ -70,6 +71,8 @@ public class IndexPageActivity extends AppCompatActivity {
     }
 
     public void createGasMeterInfo(View view) {
+        //TODO
+
         Long toBeDictated = Long.parseLong(gasMeterInfoValue.getText().toString());
 
         DocumentReference document = firebaseFirestore.collection("datas").document(firebaseUser.getUid());
@@ -77,7 +80,11 @@ public class IndexPageActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 GasMeterInfo gasMeterInfo = new GasMeterInfo(LocalDateTime.now(), toBeDictated);
 
-                document.set(gasMeterInfo);
+                List<GasMeterInfo> gasMeterInfoList = task.getResult();
+
+                gasMeterInfoList.add(gasMeterInfo);
+
+                document.set(gasMeterInfoList);
             }
         });
 
