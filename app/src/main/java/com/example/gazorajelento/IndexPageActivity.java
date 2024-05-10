@@ -81,10 +81,10 @@ public class IndexPageActivity extends AppCompatActivity {
                 GasMeterInfo gasMeterInfo = new GasMeterInfo(LocalDateTime.now(), toBeDictated);
 
                 List<GasMeterInfo> gasMeterInfoList = task.getResult();
-
                 gasMeterInfoList.add(gasMeterInfo);
 
-                document.set(gasMeterInfoList);
+                GasMeterData gasMeterData = new GasMeterData().setData(gasMeterInfoList);
+                document.set(gasMeterData);
             }
         });
 
