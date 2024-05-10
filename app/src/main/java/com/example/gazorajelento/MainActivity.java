@@ -15,14 +15,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.ktx.Firebase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,20 +68,17 @@ public class MainActivity extends AppCompatActivity {
         String password = passowordInput.getText().toString().trim();
 
         if (!username.isEmpty() && !password.isEmpty()) {
-            firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        Log.d(LOG_TAG, "Belépés sikeres");
-                        setIntentToIndexPage();
-                    } else {
-                        Log.d(LOG_TAG, "Nem sikerült belépni");
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("Nem siketült belépni");
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                        //finish();
-                    }
+            firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    Log.d(LOG_TAG, "Belépés sikeres");
+                    setIntentToIndexPage();
+                } else {
+                    Log.d(LOG_TAG, "Nem sikerült belépni");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Nem siketült belépni");
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    //finish();
                 }
             });
         } else {

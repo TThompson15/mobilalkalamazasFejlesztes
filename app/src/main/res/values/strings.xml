@@ -11,6 +11,10 @@
     <string name="cancel">Mégse</string>
     <string name="c_m">Cím</string>
     <string name="default_web_client_id">1900085</string>
+    <string name="j_rt_k_dikt_l_sa">Új érték diktálása</string>
+    <string name="j_rt_k_bedikt_l_sa">Új érték bediktálása</string>
+    <string name="rt_k">Érték</string>
+    <string name="bedikt_l">Bediktál</string>
 
     <string-array name="mobileOptions">
         <item>Otthoni</item>

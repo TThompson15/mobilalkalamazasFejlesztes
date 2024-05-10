@@ -17,10 +17,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.gazorajelento.model.UserDetails;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegistrationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String LOG_TAG = RegistrationActivity.class.getName();
@@ -30,6 +33,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     private SharedPreferences sharedPreferences;
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firebaseFirestore;
 
     EditText username;
     EditText password;
@@ -76,8 +80,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         mobileSpinner.setAdapter(adapter);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
-
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -102,19 +105,27 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
             return;
         }
 
-        firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d(LOG_TAG, "Sikerült egy új felhasználót létrehozni");
-                    setIntentToIndexPage();
-                } else {
-                    Log.d(LOG_TAG, "Sajnos nem jött létre új felhasználó");
-                }
+        firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                Log.d(LOG_TAG, "A bejelentkezett felhasználó: " + task.getResult().toString());
+                DocumentReference document = firebaseFirestore.collection("users")
+                        .document(task.getResult().getUser().getUid());
+
+                UserDetails userDetails = new UserDetails(usernameText, passwordText, emailText, mobileText, addressText);
+                document.set(userDetails).addOnCompleteListener(this::successfullyRegistration);
+            } else {
+                Log.d(LOG_TAG, "TASK: " + task.getException());
+                Log.d(LOG_TAG, "Sajnos nem jött létre új felhasználó");
             }
         });
 
+    }
 
+    private void successfullyRegistration(Task<Void> task) {
+        if (task.isSuccessful()) {
+            Log.d(LOG_TAG, "Sikerült egy új felhasználót létrehozni");
+            setIntentToIndexPage();
+        }
     }
 
     private void setIntentToIndexPage () {
