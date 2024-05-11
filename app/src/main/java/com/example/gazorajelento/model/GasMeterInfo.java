@@ -4,22 +4,22 @@ import java.time.LocalDateTime;
 
 public class GasMeterInfo {
 
-    private LocalDateTime actualDateTime;   //LocalDateTime.now()
+    private String actualDateTime;   //LocalDateTime.now()
     private long currentAmount;
 
     public GasMeterInfo() {
     }
 
-    public GasMeterInfo(LocalDateTime actualDateTime, long currentAmount) {
+    public GasMeterInfo(String actualDateTime, long currentAmount) {
         this.actualDateTime = actualDateTime;
         this.currentAmount = currentAmount;
     }
 
-    public LocalDateTime getActualDateTime() {
+    public String getActualDateTime() {
         return actualDateTime;
     }
 
-    public void setActualDateTime(LocalDateTime actualDateTime) {
+    public void setActualDateTime(String actualDateTime) {
         this.actualDateTime = actualDateTime;
     }
 

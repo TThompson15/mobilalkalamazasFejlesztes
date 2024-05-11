@@ -11,16 +11,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.gazorajelento.model.UserDetails;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -98,15 +96,24 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         String mobileType = mobileSpinner.getSelectedItem().toString();
         String addressText = address.getText().toString();
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
+
         if (passwordText.equals(passwordConfirmText)) {
             Log.i(LOG_TAG, "Regisztrált: " + usernameText + ", jelszó: " + passwordText + ", email: " + emailText + ", telefonszám: " + mobileText + ", telefontípus: " + mobileType + ", cím: " + addressText);
         } else {
+            builder.setMessage("Nem egyenlő a jelszó és a jelszó megerősítése!");
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
             Log.e(LOG_TAG, "Nem egyenlő a jelszó és a jelszó megerősítése!");
             return;
         }
 
         firebaseAuth.createUserWithEmailAndPassword(emailText, passwordText).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
+                builder.setMessage("Sikeres regisztráció! ");
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
                 Log.d(LOG_TAG, "A bejelentkezett felhasználó: " + task.getResult().toString());
                 DocumentReference document = firebaseFirestore.collection("users")
                         .document(task.getResult().getUser().getUid());
@@ -114,6 +121,9 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
                 UserDetails userDetails = new UserDetails(usernameText, passwordText, emailText, mobileText, addressText);
                 document.set(userDetails).addOnCompleteListener(this::successfullyRegistration);
             } else {
+                builder.setMessage("Sajnos nem sikerült a regisztráció! ");
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
                 Log.d(LOG_TAG, "TASK: " + task.getException());
                 Log.d(LOG_TAG, "Sajnos nem jött létre új felhasználó");
             }
@@ -124,12 +134,12 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     private void successfullyRegistration(Task<Void> task) {
         if (task.isSuccessful()) {
             Log.d(LOG_TAG, "Sikerült egy új felhasználót létrehozni");
-            setIntentToIndexPage();
+            setIntentToProfilePage();
         }
     }
 
-    private void setIntentToIndexPage () {
-        Intent intent = new Intent(this, IndexPageActivity.class);
+    private void setIntentToProfilePage() {
+        Intent intent = new Intent(this, UserProfileActivity.class);
         //intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
     }

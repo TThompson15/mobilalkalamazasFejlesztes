@@ -1,5 +1,7 @@
 package com.example.gazorajelento;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.gazorajelento.model.GasMeterData;
 import com.example.gazorajelento.model.GasMeterInfo;
 import com.example.gazorajelento.model.UserDetails;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -21,6 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IndexPageActivity extends AppCompatActivity {
@@ -71,22 +75,55 @@ public class IndexPageActivity extends AppCompatActivity {
     }
 
     public void createGasMeterInfo(View view) {
-        //TODO
+        Long currentAmount = Long.parseLong(gasMeterInfoValue.getText().toString());
 
-        Long toBeDictated = Long.parseLong(gasMeterInfoValue.getText().toString());
-
+        GasMeterInfo newGasMeterInfo;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            newGasMeterInfo = new GasMeterInfo(LocalDateTime.now().toString(), currentAmount);
+            Log.d(LOG_TAG, "Van infonk" + newGasMeterInfo);
+        } else {
+            newGasMeterInfo = null;
+        }
         DocumentReference document = firebaseFirestore.collection("datas").document(firebaseUser.getUid());
+
         document.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                GasMeterInfo gasMeterInfo = new GasMeterInfo(LocalDateTime.now(), toBeDictated);
+                Log.d(LOG_TAG, "Van taskunk nagyon jo");
+                GasMeterData gasMeterData = task.getResult().toObject(GasMeterData.class);
 
-                List<GasMeterInfo> gasMeterInfoList = task.getResult();
-                gasMeterInfoList.add(gasMeterInfo);
+                if (gasMeterData == null) {
+                    // Ha nincs még adat, akkor létrehozunk egy új listát
+                    gasMeterData = new GasMeterData();
+                    gasMeterData.setData(new ArrayList<>());
+                }
 
-                GasMeterData gasMeterData = new GasMeterData().setData(gasMeterInfoList);
-                document.set(gasMeterData);
+                // Hozzáadjuk az új GasMeterInfo objektumot a listához
+                gasMeterData.getData().add(newGasMeterInfo);
+
+                // Frissítjük a Firebase adatbázist az új listával
+                document.set(gasMeterData).addOnCompleteListener(this::successfullyRegistration);
+                setIntentToAllDatas();
             }
         });
-
     }
+    private void testing(Task<Void> task) {
+        if (task.isSuccessful()) {
+            Log.d(LOG_TAG, "Hurra");
+        } else {
+            Log.d(LOG_TAG, "Ganaj");
+        }
+    }
+
+    private void successfullyRegistration(Task<Void> task) {
+        if (task.isSuccessful()) {
+            Log.d(LOG_TAG, "Sikerült egy gázóra leolvasást regisztrálnod.");
+        }
+    }
+
+    private void setIntentToAllDatas () {
+        Intent intent = new Intent(this, GasMeterDataActivity.class);
+        //intent.putExtra("SECRET_KEY", SECRET_KEY);
+        startActivity(intent);
+    }
+
 }

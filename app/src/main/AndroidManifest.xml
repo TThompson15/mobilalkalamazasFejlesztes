@@ -18,6 +18,9 @@
         <activity
             android:name=".RegistrationActivity"
             android:exported="false" />
+        <activity android:name=".GasMeterDataActivity" />
+        <activity android:name=".UserProfileActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
         usernameInput = findViewById(R.id.usernameInput);
         passowordInput = findViewById(R.id.passwordInput);
         sharedPreferences = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setIntentToIndexPage () {
-        Intent intent = new Intent(this, IndexPageActivity.class);
+        Intent intent = new Intent(this, UserProfileActivity.class);
         //intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
     }
