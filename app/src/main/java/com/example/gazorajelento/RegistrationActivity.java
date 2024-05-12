@@ -1,7 +1,10 @@
 package com.example.gazorajelento;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.Spinner;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -64,10 +68,10 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         address = findViewById(R.id.registerAddress);
         sharedPreferences = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
 
-        String userName = sharedPreferences.getString("username","");
-        String passWord = sharedPreferences.getString("password","");
+        String eMail = sharedPreferences.getString("username", "");
+        String passWord = sharedPreferences.getString("password", "");
 
-        username.setText(userName);
+        email.setText(eMail);
         password.setText(passWord);
         passwordConfirm.setText(passWord);
 
@@ -88,15 +92,40 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void registration(View view) {
-        String usernameText = username.getText().toString();
-        String passwordText = password.getText().toString();
-        String passwordConfirmText = passwordConfirm.getText().toString();
-        String emailText = email.getText().toString();
-        String mobileText = mobile.getText().toString();
-        String mobileType = mobileSpinner.getSelectedItem().toString();
-        String addressText = address.getText().toString();
-
+        String usernameText;
+        String passwordText;
+        String passwordConfirmText;
+        String emailText;
+        String mobileText;
+        String mobileType;
+        String addressText;
         AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
+
+        try {
+            usernameText = username.getText().toString();
+            passwordText = password.getText().toString();
+            passwordConfirmText = passwordConfirm.getText().toString();
+            emailText = email.getText().toString();
+            mobileText = mobile.getText().toString();
+            mobileType = mobileSpinner.getSelectedItem().toString();
+            addressText = address.getText().toString();
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "Valami nem sikerült! ");
+            return;
+        }
+
+        if (usernameText.isEmpty() ||
+                passwordText.isEmpty() ||
+                passwordConfirmText.isEmpty() ||
+                emailText.isEmpty() ||
+                mobileText.isEmpty() ||
+                mobileType.isEmpty() ||
+                addressText.isEmpty()) {
+            builder.setMessage("Kérlek add meg az adataid!");
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return;
+        }
 
         if (passwordText.equals(passwordConfirmText)) {
             Log.i(LOG_TAG, "Regisztrált: " + usernameText + ", jelszó: " + passwordText + ", email: " + emailText + ", telefonszám: " + mobileText + ", telefontípus: " + mobileType + ", cím: " + addressText);
@@ -121,7 +150,13 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
                 UserDetails userDetails = new UserDetails(usernameText, passwordText, emailText, mobileText, addressText);
                 document.set(userDetails).addOnCompleteListener(this::successfullyRegistration);
             } else {
-                builder.setMessage("Sajnos nem sikerült a regisztráció! ");
+                String whyNot;
+                if (passwordText.length() < 6) {
+                    whyNot = "Túl rövid jelszó (min. 6 karakter)!";
+                } else {
+                    whyNot = "Ilyen email címmel már van regisztrálva valaki!";
+                }
+                builder.setMessage("Sajnos nem sikerült a regisztráció! " + whyNot);
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
                 Log.d(LOG_TAG, "TASK: " + task.getException());
@@ -134,6 +169,23 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
     private void successfullyRegistration(Task<Void> task) {
         if (task.isSuccessful()) {
             Log.d(LOG_TAG, "Sikerült egy új felhasználót létrehozni");
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            String channelId = "registration_channel";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(
+                        channelId,
+                        "Registration Notifications",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                    .setSmallIcon(R.drawable.ic_stat_name)
+                    .setContentTitle("Sikeres regisztráció")
+                    .setContentText("Sikeresen regisztráltál az alkalmazásban!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            notificationManager.notify(0, builder.build());
+
             setIntentToProfilePage();
         }
     }
@@ -142,6 +194,7 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         Intent intent = new Intent(this, UserProfileActivity.class);
         //intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public void cancelOut(View view) {
@@ -154,11 +207,13 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         super.onStart();
         Log.i(LOG_TAG, "onStart");
     }
+
     @Override
     protected void onRestart() {
         super.onRestart();
         Log.i(LOG_TAG, "onRestart");
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -170,11 +225,13 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         super.onPause();
         Log.i(LOG_TAG, "onPause");
     }
+
     @Override
     protected void onStop() {
         super.onStop();
         Log.i(LOG_TAG, "onStop");
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

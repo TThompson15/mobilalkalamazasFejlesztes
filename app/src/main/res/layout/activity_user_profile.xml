@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="210dp"
             android:onClick="logout"
-            android:text="Kijelentkezés" />
+            android:text="@string/kijelentkez_s" />
 
         <TextView
             android:id="@+id/profileTextView"
@@ -23,16 +23,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="80dp"
             android:layout_marginTop="50dp"
-            android:text="Profil adatok"
+            android:text="@string/profil_adatok"
             android:textAlignment="center"
-            android:textSize="40dp" />
+            android:textSize="40sp" />
 
 
         <EditText
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Felhasználónév"
+            android:hint="@string/felhaszn_l_n_v"
             android:layout_marginStart="@dimen/_35dp"
             android:layout_marginTop="@dimen/_10dp"
             android:layout_marginEnd="@dimen/_35dp"
@@ -42,7 +42,7 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Jelszó"
+            android:hint="@string/jelsz"
             android:inputType="textPassword"
             android:layout_marginStart="@dimen/_35dp"
             android:layout_marginTop="@dimen/_10dp"
@@ -52,7 +52,7 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="@string/email"
             android:layout_marginStart="@dimen/_35dp"
             android:layout_marginTop="@dimen/_10dp"
             android:layout_marginEnd="@dimen/_35dp"
@@ -63,7 +63,7 @@
             android:id="@+id/mobile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Mobil"
+            android:hint="@string/mobil"
             android:layout_marginStart="@dimen/_35dp"
             android:layout_marginTop="@dimen/_10dp"
             android:layout_marginEnd="@dimen/_35dp"/>
@@ -75,7 +75,7 @@
             android:layout_marginStart="@dimen/_35dp"
             android:layout_marginTop="@dimen/_10dp"
             android:layout_marginEnd="@dimen/_35dp"
-            android:hint="Cím"
+            android:hint="@string/c_m"
             android:inputType="textPostalAddress|textMultiLine"
             />
 
@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
-                    android:text="Módosítás"
+                    android:text="@string/m_dos_t_s"
                     android:onClick="updateUserProfile"/>
 
 
@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="50dp"
                     android:onClick="loadUserDetailsPlease"
-                    android:text="Mégse" />
+                    android:text="@string/m_gse" />
 
             </LinearLayout>
 
@@ -113,7 +113,7 @@
             android:layout_marginStart="120dp"
             android:layout_marginTop="50dp"
             android:onClick="confirmDeletion"
-            android:text="Profil törlése" />
+            android:text="@string/profil_t_rl_se" />
 
         <Button
             android:id="@+id/createADictation"
@@ -122,7 +122,7 @@
             android:layout_marginStart="120dp"
             android:layout_marginTop="50dp"
             android:onClick="moveToDictation"
-            android:text="Új Diktálás" />
+            android:text="@string/j_dikt_l_s" />
 
     </LinearLayout>
 

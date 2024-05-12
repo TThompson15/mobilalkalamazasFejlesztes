@@ -23,8 +23,6 @@ public class GasMeterDataActivity extends AppCompatActivity {
 
     private FirebaseUser firebaseUser;
     private FirebaseFirestore firebaseFirestore;
-    private CollectionReference data;
-
     private RecyclerView recyclerView;
     private GasMeterDataAdapter adapter;
 

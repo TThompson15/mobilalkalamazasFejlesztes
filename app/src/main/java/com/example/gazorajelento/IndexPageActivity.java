@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -25,14 +26,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public class IndexPageActivity extends AppCompatActivity {
 
     private FirebaseUser firebaseUser;
 
     private FirebaseFirestore firebaseFirestore;
-    private CollectionReference data;
     private static final String LOG_TAG = IndexPageActivity.class.getName();
     EditText gasMeterInfoValue;
 
@@ -76,14 +75,8 @@ public class IndexPageActivity extends AppCompatActivity {
 
     public void createGasMeterInfo(View view) {
         Long currentAmount = Long.parseLong(gasMeterInfoValue.getText().toString());
+        AlertDialog.Builder builder = new AlertDialog.Builder(IndexPageActivity.this);
 
-        GasMeterInfo newGasMeterInfo;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            newGasMeterInfo = new GasMeterInfo(LocalDateTime.now().toString(), currentAmount);
-            Log.d(LOG_TAG, "Van infonk" + newGasMeterInfo);
-        } else {
-            newGasMeterInfo = null;
-        }
         DocumentReference document = firebaseFirestore.collection("datas").document(firebaseUser.getUid());
 
         document.get().addOnCompleteListener(task -> {
@@ -92,20 +85,33 @@ public class IndexPageActivity extends AppCompatActivity {
                 GasMeterData gasMeterData = task.getResult().toObject(GasMeterData.class);
 
                 if (gasMeterData == null) {
-                    // Ha nincs még adat, akkor létrehozunk egy új listát
                     gasMeterData = new GasMeterData();
                     gasMeterData.setData(new ArrayList<>());
                 }
 
-                // Hozzáadjuk az új GasMeterInfo objektumot a listához
-                gasMeterData.getData().add(newGasMeterInfo);
+                if (gasMeterData.getData().isEmpty() || currentAmount > gasMeterData.getData().get(gasMeterData.getData().size() - 1).getCurrentAmount()) {
+                    GasMeterInfo newGasMeterInfo;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        newGasMeterInfo = new GasMeterInfo(LocalDateTime.now().toString(), currentAmount);
+                        Log.d(LOG_TAG, "Van infonk" + newGasMeterInfo);
+                    } else {
+                        newGasMeterInfo = null;
+                    }
 
-                // Frissítjük a Firebase adatbázist az új listával
-                document.set(gasMeterData).addOnCompleteListener(this::successfullyRegistration);
-                setIntentToAllDatas();
+                    gasMeterData.getData().add(newGasMeterInfo);
+
+                    document.set(gasMeterData).addOnCompleteListener(this::successfullyRegistration);
+                    setIntentToAllDatas();
+                } else {
+                    builder.setMessage("Ez a diktált érték kisebb(vagy ugyanaz), mint a legutoljára bediktált! Visszafele megy az óra?");
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    Log.d(LOG_TAG, "Az új érték nem nagyobb, mint az utolsó");
+                }
             }
         });
     }
+
     private void testing(Task<Void> task) {
         if (task.isSuccessful()) {
             Log.d(LOG_TAG, "Hurra");
@@ -120,10 +126,11 @@ public class IndexPageActivity extends AppCompatActivity {
         }
     }
 
-    private void setIntentToAllDatas () {
+    private void setIntentToAllDatas() {
         Intent intent = new Intent(this, GasMeterDataActivity.class);
         //intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
 }

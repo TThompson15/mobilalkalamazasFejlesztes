@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GasMeterDataAdapter extends RecyclerView.Adapter<GasMeterDataAdapter.ViewHolder> {
 
-    private List<GasMeterInfo> gasMeterInfoList;
+    private final List<GasMeterInfo> gasMeterInfoList;
 
     public GasMeterDataAdapter(List<GasMeterInfo> gasMeterInfoList) {
         this.gasMeterInfoList = gasMeterInfoList;
@@ -30,7 +30,7 @@ public class GasMeterDataAdapter extends RecyclerView.Adapter<GasMeterDataAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GasMeterInfo gasMeterInfo = gasMeterInfoList.get(position);
-        holder.tvDateTime.setText(gasMeterInfo.getActualDateTime().toString());
+        holder.tvDateTime.setText(gasMeterInfo.getActualDateTime());
         holder.tvValue.setText(String.valueOf(gasMeterInfo.getCurrentAmount()));
     }
 

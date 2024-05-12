@@ -10,7 +10,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,7 +49,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if (firebaseUser != null) {
             loadUserDetails();
         } else {
-            Log.d(LOG_TAG,"Valami hiba van!");
+            Log.d(LOG_TAG, "Valami hiba van!");
             finish();
         }
 
@@ -73,6 +72,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
     }
+
     public void loadUserDetailsPlease(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
         builder.setMessage("Értékek visszaállítva a legutóbbi mentésre");
@@ -111,6 +111,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     public void confirmDeletion(View view) {
+        Animation rotate = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        view.startAnimation(rotate);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Biztos akarod törölni? Ha igen, üsd be, hogy 'BIZTOS'!");
 
@@ -138,6 +141,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         Log.d(LOG_TAG, "Felhasználói fiók törölve.");
                         Intent intent = new Intent(UserProfileActivity.this, MainActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         finish();
                     }
                 });
@@ -149,5 +153,4 @@ public class UserProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
 }
